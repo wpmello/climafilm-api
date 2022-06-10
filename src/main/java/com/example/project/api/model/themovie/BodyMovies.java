@@ -2,11 +2,14 @@ package com.example.project.api.model.themovie;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class BodyMovies {
     private boolean adult;
     private String backdrop_path;
-    private Integer[] genre_ids;
+    private List<Integer> genre_ids = new ArrayList<>();
     private Integer id;
     private String original_language;
     private String original_title;
