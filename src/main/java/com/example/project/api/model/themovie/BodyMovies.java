@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Generated;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class BodyMovies {
     private Long popularity;
     private String poster_path;
     private String release_date;
+    @NotBlank
     private String title;
     private boolean video;
     private Long vote_average;

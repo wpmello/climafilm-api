@@ -3,6 +3,7 @@ package com.example.project.api.service;
 import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
+import com.example.project.api.repository.MovieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class MovieService {
+
+    private MovieRepository movieRepository;
 
     @Bean
     public RestTemplate template() {
@@ -103,6 +106,13 @@ public class MovieService {
         }
     }
 
+    public BodyMovies save(BodyMovies movie) {
+        String urlFinalMovie = getUrlMovie();
+        BodyMovies MovieToSave = this.movieRepository.save(movie);
+
+        return MovieToSave;
+    }
+
     // URL - MOVIE | method
     private String getUrlMovie() {
         String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
@@ -119,7 +129,7 @@ public class MovieService {
         return urlFinal;
     }
 
-//    URL - WEATHER | method
+    //    URL - WEATHER | method
     private String getUrlWeather(String city) {
         String apiKey = "bb85471d2221957c640336916cec2bf7";
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
