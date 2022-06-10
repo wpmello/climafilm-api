@@ -43,7 +43,7 @@ public class MovieController {
 
     @GetMapping("/db/{id}")
     public BodyMovies getAllMoviesOnDatabase(@PathVariable Integer id) throws MovieNotFoundException {
-        BodyMovies allMovieOnDatabase = this.movieService.getMovieByIdOnDatabase(id);
+        BodyMovies allMovieOnDatabase = this.movieService.getMovieById(id);
 
         return allMovieOnDatabase;
     }
@@ -52,5 +52,17 @@ public class MovieController {
     @ResponseStatus(HttpStatus.CREATED)
     public BodyMovies AddMovie(@RequestBody @Valid BodyMovies movie) {
         return this.movieService.save(movie);
+    }
+
+    @PutMapping("/db/{id}")
+    public BodyMovies updateMovie(@PathVariable int id, @RequestBody BodyMovies movie) throws MovieNotFoundException {
+        BodyMovies movieToUpdate = this.movieService.update(id, movie);
+        return movieToUpdate;
+    }
+
+    @DeleteMapping("/db/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMovie(@PathVariable int id) throws MovieNotFoundException {
+        this.movieService.delete(id);
     }
 }

@@ -117,10 +117,9 @@ public class MovieService {
         return allMovies;
     }
 
-    public BodyMovies getMovieByIdOnDatabase(int id) throws MovieNotFoundException {
-        BodyMovies getMovie = this.movieRepository
-                .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+    // MOVIE | GET + id
+    public BodyMovies getMovieById(int id) throws MovieNotFoundException {
+        BodyMovies getMovie = verifyIfExits(id);
 
         return getMovie;
     }
@@ -131,6 +130,23 @@ public class MovieService {
         BodyMovies MovieToSave = this.movieRepository.save(movie);
 
         return MovieToSave;
+    }
+
+    // MOVIE | PUT
+    public BodyMovies update(int id, BodyMovies movie) throws MovieNotFoundException {
+        BodyMovies movieToUpdate = verifyIfExits(id);
+
+        movieToUpdate.setTitle(movie.getTitle());
+
+        BodyMovies movieToReceiveUpdate = this.movieRepository.save(movieToUpdate);
+
+        return movieToReceiveUpdate;
+    }
+
+    // MOVIE | DELETE
+    public void delete(int id) throws MovieNotFoundException {
+        verifyIfExits(id);
+        this.movieRepository.deleteById(id);
     }
 
     // URL - MOVIE | method
@@ -166,4 +182,11 @@ public class MovieService {
                 .toString();
         return urlFinal;
     }
+
+    private BodyMovies verifyIfExits(int id) throws MovieNotFoundException {
+        return this.movieRepository
+                .findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
+    }
+
 }
