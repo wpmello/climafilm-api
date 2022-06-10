@@ -45,13 +45,13 @@ $ Dentro da pasta abra qualquer teminal.
 # Pelo terminal, clone o repositório com o seguinte comando:
 $ git clone https://github.com/wpmello/filtered-movie-per-mood.git
 
-Abra a pasta do repositório e se voce instalou certinho o Java e o Maven na sua máquina agora basta iniciar <br>
+Abra a pasta do repositório e se voce instalou certinho o Java e o Maven na sua máquina agora basta iniciar
 a aplicação com o comando:
 $ mvn spring-boot:run
 
 A aplicação vai subir e voce vai ver pelo seu terminal
 
-Caso não tenha certeza que baixou o Java ou o Maven corretamente basta ir no terminal <br>
+Caso não tenha certeza que baixou o Java ou o Maven corretamente basta ir no terminal
 (com a aplicação parada) e digitar
 
 $ mvn -v
@@ -65,7 +65,7 @@ $ localhost:8080/app/movie/on-playing
 Para ver todos os filmes em cartaz em formato Json
 
 $ localhost:8080/app/movie/on-playing/sao paulo
-Para ver os filmes sugeridos com base na temperatura atual da cidade de São Paulo. <br>
+Para ver os filmes sugeridos com base na temperatura atual da cidade de São Paulo.
 Você pode testar com qualquer cidade.
 
 ----> Para as funções abaixo é recomendados que baixe o Postman para fazer a inserção de dados no  <----
@@ -92,7 +92,7 @@ Para deletar, passe o id de qual filme deseja deletar
 # Caso queira verificar o banco de dados h2 basta ir no navegador e inserir a url:
 $ localhost:8080/h2-console
 
-As configurações do mesmo se encontram no arquivo 'application.properties'. Mas caso prefira, <br>
+As configurações do mesmo se encontram no arquivo 'application.properties'. Mas caso prefira,
 aqui está oq você vai precisar para entrar no banco.
 url: jdbc:h2:mem:filtered-movie-per-mood
 user name: sa
