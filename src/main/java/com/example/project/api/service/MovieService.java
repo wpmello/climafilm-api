@@ -109,6 +109,13 @@ public class MovieService {
         }
     }
 
+    public List<BodyMovies> getMovies() {
+        List<BodyMovies> allMovies = this.movieRepository.findAll();
+
+        return allMovies;
+    }
+
+    // MOVIE - POST
     public BodyMovies save(BodyMovies movie) {
         String urlFinalMovie = getUrlMovie();
         BodyMovies MovieToSave = this.movieRepository.save(movie);

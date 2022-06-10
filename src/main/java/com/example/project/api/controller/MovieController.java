@@ -33,6 +33,13 @@ public class MovieController {
         return this.movieService.getMovieOnPlayingNowPerCity(city);
     }
 
+    @GetMapping("/db")
+    public List<BodyMovies> getAllMoviesOnDatabase() {
+        List<BodyMovies> allMovieOnDatabase = this.movieService.getMovies();
+
+        return allMovieOnDatabase;
+    }
+
     @PostMapping("/db")
     @ResponseStatus(HttpStatus.CREATED)
     public BodyMovies AddMovie(@RequestBody @Valid BodyMovies movie) {
