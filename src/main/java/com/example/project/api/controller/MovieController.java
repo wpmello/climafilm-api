@@ -1,5 +1,6 @@
 package com.example.project.api.controller;
 
+import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.service.MovieService;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("app/movie")
@@ -24,5 +27,10 @@ public class MovieController {
     @GetMapping("/on-playing")
     public Poster getMovieOnPlayingNow() {
         return this.movieService.getMovieOnPlayingNow();
+    }
+
+    @GetMapping("/on-playing/{city}")
+    public List<BodyMovies> getMoviePerCity(@PathVariable String city) {
+        return this.movieService.getMovieOnPlayingNowPerCity(city);
     }
 }

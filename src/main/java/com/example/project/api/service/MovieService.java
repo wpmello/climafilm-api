@@ -1,12 +1,18 @@
 package com.example.project.api.service;
 
+import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
+@Slf4j
 public class MovieService {
 
     @Bean
@@ -29,6 +35,73 @@ public class MovieService {
         Poster entity = template()
                 .getForObject(finalUrl, Poster.class);
         return entity;
+    }
+
+    // MOVIE - GET | Playing now + city
+
+    public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
+        String urlFinalWeather = getUrlWeather(city);
+        String urlFinalMovie = getUrlMovie();
+
+        Long temp = template()
+                .getForObject(urlFinalWeather, BodyWeather.class)
+                .getMain()
+                .getTemp();
+
+
+        if (temp > 40) {
+            List<BodyMovies> results = template()
+                    .getForEntity(urlFinalMovie, Poster.class)
+                    .getBody()
+                    .getResults()
+                    .stream()
+                    .filter(movie -> movie.getGenre_ids().contains(28))
+                    // I didn't use this method below 'cause it was hard to return some movie with this condition
+                    //.filter(movie -> movie.getGenre_ids().size() == 1 && movie.getGenre_ids().contains(28))
+                    .collect(Collectors.toList());
+            log.info("The temp returned was {}", temp);
+            return results;
+        } else if (temp >= 36) {
+            List<BodyMovies> results = template()
+                    .getForEntity(urlFinalMovie, Poster.class)
+                    .getBody()
+                    .getResults()
+                    .stream()
+                    .filter(movie -> movie.getGenre_ids().contains(35))
+                    .collect(Collectors.toList());
+            log.info("The temp returned was {}", temp);
+            return results;
+        } else if (temp >= 20) {
+            List<BodyMovies> results = template()
+                    .getForEntity(urlFinalMovie, Poster.class)
+                    .getBody()
+                    .getResults()
+                    .stream()
+                    .filter(movie -> movie.getGenre_ids().contains(16))
+                    .collect(Collectors.toList());
+            log.info("The temp returned was {}", temp);
+            return results;
+        } else if (temp >= 0) {
+            List<BodyMovies> results = template()
+                    .getForEntity(urlFinalMovie, Poster.class)
+                    .getBody()
+                    .getResults()
+                    .stream()
+                    .filter(movie -> movie.getGenre_ids().contains(53))
+                    .collect(Collectors.toList());
+            log.info("The temp returned was {}", temp);
+            return results;
+        } else {
+            List<BodyMovies> results = template()
+                    .getForEntity(urlFinalMovie, Poster.class)
+                    .getBody()
+                    .getResults()
+                    .stream()
+                    .filter(movie -> movie.getGenre_ids().contains(99))
+                    .collect(Collectors.toList());
+            log.info("The temp returned was {}", temp);
+            return results;
+        }
     }
 
     // URL - MOVIE | method
