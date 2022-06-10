@@ -38,7 +38,6 @@ public class MovieService {
     }
 
     // MOVIE - GET | Playing now + city
-
     public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
         String urlFinalWeather = getUrlWeather(city);
         String urlFinalMovie = getUrlMovie();
