@@ -1,6 +1,6 @@
 package com.example.project.api.service;
 
-import com.example.project.api.model.BodyWeather;
+import com.example.project.api.model.weather.BodyWeather;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

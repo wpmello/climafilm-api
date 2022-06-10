@@ -1,11 +1,11 @@
-package com.example.project.api.model;
+package com.example.project.api.model.weather;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Clouds {
+public class Rain {
 
-    private Integer all;
+    private String h1;
 }
