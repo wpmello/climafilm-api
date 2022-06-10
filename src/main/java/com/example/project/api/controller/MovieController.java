@@ -3,6 +3,7 @@ package com.example.project.api.controller;
 import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.service.MovieService;
+import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,13 @@ public class MovieController {
     @GetMapping("/db")
     public List<BodyMovies> getAllMoviesOnDatabase() {
         List<BodyMovies> allMovieOnDatabase = this.movieService.getMovies();
+
+        return allMovieOnDatabase;
+    }
+
+    @GetMapping("/db/{id}")
+    public BodyMovies getAllMoviesOnDatabase(@PathVariable Integer id) throws MovieNotFoundException {
+        BodyMovies allMovieOnDatabase = this.movieService.getMovieByIdOnDatabase(id);
 
         return allMovieOnDatabase;
     }

@@ -4,6 +4,7 @@ import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
 import com.example.project.api.repository.MovieRepository;
+import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,10 +110,19 @@ public class MovieService {
         }
     }
 
+    // MOVIE - GET
     public List<BodyMovies> getMovies() {
         List<BodyMovies> allMovies = this.movieRepository.findAll();
 
         return allMovies;
+    }
+
+    public BodyMovies getMovieByIdOnDatabase(int id) throws MovieNotFoundException {
+        BodyMovies getMovie = this.movieRepository
+                .findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
+
+        return getMovie;
     }
 
     // MOVIE - POST
