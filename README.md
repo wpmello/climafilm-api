@@ -1,9 +1,9 @@
 # API RESTful _filtered movies per mood_
-Api desenvolvida para sugerir filmes que estão em cartaz para quem for usa-lá com base na temperatura atual do lugar onde a pessoa está. Qualquer lugar do mundo! Com isso sua lógica segue: <br>
-Se o local onde a pessoa está estiver fazendo mais de **40°C** ou mais serão sugeridos filmes com o gênero **ação** <br>
-Se estiver fazendo entre **36°C e 40**, então serão sugeridos filmes com o gênero **comédia** <br>
-Se estiver fazendo entre **20°C e 35**, então serão sugeridos filmes com o gênero **animações** <br>
-Se estiver fazendo entre **0°C e 20**, então serão sugeridos filmes com o gênero **suspence** <br
+Api desenvolvida para sugerir filmes que estão em cartaz com base na temperatura atual do lugar onde a pessoa está ou em qualquer lugar do mundo! Com isso sua lógica segue: <br>
+Se o local onde a pessoa está estiver fazendo mais de **40°C** serão sugeridos filmes com o gênero **ação** <br>
+Se estiver fazendo entre **36°C e 40°C**, então serão sugeridos filmes com o gênero **comédia** <br>
+Se estiver fazendo entre **20°C e 35°C**, então serão sugeridos filmes com o gênero **animações** <br>
+Se estiver fazendo entre **0°C e 20°C**, então serão sugeridos filmes com o gênero **suspence** <br>
 E estiver fazendo menos de **0°C**, então serão sugeridos filmes com o gênero **documentários** <br>
 Para o desenvolvimento foram usadas duas APIs externas que são elas: [openweathermap](https://openweathermap.org/) & [themoviedb](https://www.themoviedb.org/)
 ## Objetivo ✔
@@ -30,8 +30,8 @@ Para o desenvolvimento foram usadas duas APIs externas que são elas: [openweath
 ---
 ## Baixe-a na sua máquina para testar ou até mesmo melhora-lá 🤝
 ### **_REQUISITOS NECESSÁRIOS_**
-- Java - 11+ version
-- Maven - 3.8.5 version <br>
+- Java na 11+ version
+- Maven na 3.8.5 version <br>
 **_Necessário ter instalado na sua máquina pelo menos esses dois caras de cima_**
 ## E agora aqui vai o passo a passo para baixar a api e testar:
 
@@ -39,23 +39,25 @@ Para o desenvolvimento foram usadas duas APIs externas que são elas: [openweath
 # Copie a url do repositório no botão verde lá em cima ou esta que está aqui em baixo:
 $ https://github.com/wpmello/filtered-movie-per-mood.git
 
-# Crie uma pasta em um ambiente de preferência na sua máquina
+# Crie uma pasta em um ambiente de sua preferência na sua máquina
 $ Dentro da pasta abra qualquer teminal.
 
 # Pelo terminal, clone o repositório com o seguinte comando:
 $ git clone https://github.com/wpmello/filtered-movie-per-mood.git
 
-Abra a pasta do repositório e se voce instalou certinho o Java e o Maven na sua máquina agora basta iniciar a aplicação com o comando:
-$$$ mvn spring-boot:run
+Abra a pasta do repositório e se voce instalou certinho o Java e o Maven na sua máquina agora basta iniciar <br>
+a aplicação com o comando:
+$ mvn spring-boot:run
 
 A aplicação vai subir e voce vai ver pelo seu terminal
 
-Caso não tenha certeza que baixou o Java ou o Maven corretamente basta ir no terminal (com a aplicação parada) e digitar
+Caso não tenha certeza que baixou o Java ou o Maven corretamente basta ir no terminal <br>
+(com a aplicação parada) e digitar
 
 $ mvn -v
-Para verificar o Maven
+Para verificar o Maven e sua versão
 $ java -version
-Para verificar o Java 
+Para verificar o Java e sua versão
 
 Agora finalmente para testar a api e ver seus resultado basta ir no navegador e digitar:
 
@@ -63,7 +65,8 @@ $ localhost:8080/app/movie/on-playing
 Para ver todos os filmes em cartaz em formato Json
 
 $ localhost:8080/app/movie/on-playing/sao paulo
-Para ver os filmes sugeridos com base na temperatura atual da cidade de São Paulo. Você pode testar com qualquer cidade.
+Para ver os filmes sugeridos com base na temperatura atual da cidade de São Paulo. <br>
+Você pode testar com qualquer cidade.
 
 ----> Para as funções abaixo é recomendados que baixe o Postman para fazer a inserção de dados no  <----
 ----> banco e assim conseguir testar melhor as outras funções. Link logo abaixo depois desse bloco <----
@@ -89,7 +92,8 @@ Para deletar, passe o id de qual filme deseja deletar
 # Caso queira verificar o banco de dados h2 basta ir no navegador e inserir a url:
 $ localhost:8080/h2-console
 
-As configurações do mesmo se encontram no arquivo 'application.properties'.
+As configurações do mesmo se encontram no arquivo 'application.properties'. Mas caso prefira, <br>
+aqui está oq você vai precisar para entrar no banco.
 url: jdbc:h2:mem:filtered-movie-per-mood
 user name: sa
 ```
