@@ -49,7 +49,7 @@ Abra a pasta do repositório e se voce instalou certinho o Java e o Maven na sua
 a aplicação com o comando:
 $ mvn spring-boot:run
 
-A aplicação vai subir e voce vai ver pelo seu terminal
+A aplicação vai subir e você vai ver pelo seu terminal
 
 Caso não tenha certeza que baixou o Java ou o Maven corretamente basta ir no terminal
 (com a aplicação parada) e digitar
@@ -61,33 +61,11 @@ Para verificar o Java e sua versão
 
 Agora finalmente para testar a api e ver seus resultado basta ir no navegador e digitar:
 
-$ localhost:8080/app/movie/on-playing
-Para ver todos os filmes em cartaz em formato Json
+$ localhost:8080/swagger-ui.html
+# Será apresentado na tela todos os métodos da api já com suas requisições http.
 
-$ localhost:8080/app/movie/on-playing/sao paulo
-Para ver os filmes sugeridos com base na temperatura atual da cidade de São Paulo.
-Você pode testar com qualquer cidade.
-
-----> Para as funções abaixo é recomendados que baixe o Postman para fazer a inserção de dados no  <----
-----> banco e assim conseguir testar melhor as outras funções. Link logo abaixo depois desse bloco <----
-
-$ localhost:8080/app/movie/db
-Para mostrar todas os filmes savos no banco de dados
-
-$ localhost:8080/app/movie/db/1
-Para buscar no banco de dados o filme com o id 1
-
-$ localhost:8080/app/movie/db/
-Para inserir dados no banco você pode simplesmente usar o dado 
-{
-    "title": "Code Geass"
-}
-
-$ localhost:8080/app/movie/db/1
-Para artualizar, passe o id de qual filme deseja atualizar
-
-$ localhost:8080/app/movie/db/1
-Para deletar, passe o id de qual filme deseja deletar
+### O método POST tem uma obrigatoriedade a ser seguida para ser executado aonde pelo menos seu campo
+"title" precisa estar preeenchido. ###
 
 # Caso queira verificar o banco de dados h2 basta ir no navegador e inserir a url:
 $ localhost:8080/h2-console
