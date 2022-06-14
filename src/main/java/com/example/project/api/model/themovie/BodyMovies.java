@@ -1,7 +1,6 @@
 package com.example.project.api.model.themovie;
 
 import lombok.Data;
-import lombok.Generated;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

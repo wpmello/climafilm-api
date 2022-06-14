@@ -20,7 +20,7 @@ public class BodyWeather {
 
     private String base;
     private float visibility;
-    private float  dt;
+    private float dt;
     private float timezone;
     private float id;
     private String name;

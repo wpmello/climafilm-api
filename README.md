@@ -21,7 +21,7 @@ Para o desenvolvimento foram usadas duas APIs externas que são elas: [openweath
 - Git
 - JPA
 - H2
-- **Postman** - para testar a api com uma ambiente mais agradável 
+- **Postman** - para testar a api com um ambiente mais agradável 
 ---
 ## Objetivos futuros 💡
 - [ ] Implementar um banco de dados através de docker

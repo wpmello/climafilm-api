@@ -39,9 +39,8 @@ public class MovieService {
     // MOVIE - GET | Playing now
     public Poster getMovieOnPlayingNow() {
         String finalUrl = getUrlMovie();
-        Poster entity = template()
+        return template()
                 .getForObject(finalUrl, Poster.class);
-        return entity;
     }
 
     // MOVIE - GET | Playing now + city
@@ -112,24 +111,18 @@ public class MovieService {
 
     // MOVIE - GET
     public List<BodyMovies> getMovies() {
-        List<BodyMovies> allMovies = this.movieRepository.findAll();
-
-        return allMovies;
+        return this.movieRepository.findAll();
     }
 
     // MOVIE | GET + id
     public BodyMovies getMovieById(int id) throws MovieNotFoundException {
-        BodyMovies getMovie = verifyIfExits(id);
-
-        return getMovie;
+        return verifyIfExits(id);
     }
 
     // MOVIE - POST
     public BodyMovies save(BodyMovies movie) {
         String urlFinalMovie = getUrlMovie();
-        BodyMovies MovieToSave = this.movieRepository.save(movie);
-
-        return MovieToSave;
+        return this.movieRepository.save(movie);
     }
 
     // MOVIE | PUT
@@ -138,9 +131,7 @@ public class MovieService {
 
         movieToUpdate.setTitle(movie.getTitle());
 
-        BodyMovies movieToReceiveUpdate = this.movieRepository.save(movieToUpdate);
-
-        return movieToReceiveUpdate;
+        return this.movieRepository.save(movieToUpdate);
     }
 
     // MOVIE | DELETE
