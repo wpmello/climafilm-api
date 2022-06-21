@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,8 +32,13 @@ public class MovieService {
     // WEATHER - GET
     public Long getTempCity(String city) {
         String urlFinal = getUrlWeather(city);
-        return template()
-                .getForObject(urlFinal, BodyWeather.class)
+        ResponseEntity<BodyWeather> entity = template()
+                .exchange(urlFinal,
+                        HttpMethod.GET,
+                        null,
+                        BodyWeather.class);
+        return entity
+                .getBody()
                 .getMain()
                 .getTemp();
     }
