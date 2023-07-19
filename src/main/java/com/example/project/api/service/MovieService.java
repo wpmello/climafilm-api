@@ -10,129 +10,90 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Component
 public class MovieService {
 
     private MovieRepository movieRepository;
 
-    @Bean
+    @Bean()
     public RestTemplate template() {
         return new RestTemplate();
     }
 
-    // WEATHER - GET
     public Long getTempCity(String city) {
-        String urlFinal = getUrlWeather(city);
-        ResponseEntity<BodyWeather> entity = template()
-                .exchange(urlFinal,
+        return template()
+                .exchange(getUrlWeather(city),
                         HttpMethod.GET,
                         null,
-                        BodyWeather.class);
-        return entity
+                        BodyWeather.class)
                 .getBody()
                 .getMain()
                 .getTemp();
     }
 
-    // MOVIE - GET | Playing now
     public Poster getMovieOnPlayingNow() {
-        String finalUrl = getUrlMovie();
-        return template()
-                .getForObject(finalUrl, Poster.class);
+        return template().getForObject(getUrlMovie(), Poster.class);
     }
 
-    // MOVIE - GET | Playing now + city
     public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
-        String urlFinalWeather = getUrlWeather(city);
-        String urlFinalMovie = getUrlMovie();
-
         Long temp = template()
-                .getForObject(urlFinalWeather, BodyWeather.class)
+                .getForObject(getUrlWeather(city), BodyWeather.class)
                 .getMain()
                 .getTemp();
-
-
-        if (temp > 40) {
-            List<BodyMovies> results = template()
-                    .getForEntity(urlFinalMovie, Poster.class)
-                    .getBody()
-                    .getResults()
-                    .stream()
-                    .filter(movie -> movie.getGenre_ids().contains(28))
-                    // I didn't use this method below 'cause it was hard to return some movie with this condition
-                    //.filter(movie -> movie.getGenre_ids().size() == 1 && movie.getGenre_ids().contains(28))
-                    .collect(Collectors.toList());
-            log.info("The temp returned was {}", temp);
-            return results;
-        } else if (temp >= 36) {
-            List<BodyMovies> results = template()
-                    .getForEntity(urlFinalMovie, Poster.class)
-                    .getBody()
-                    .getResults()
-                    .stream()
-                    .filter(movie -> movie.getGenre_ids().contains(35))
-                    .collect(Collectors.toList());
-            log.info("The temp returned was {}", temp);
-            return results;
-        } else if (temp >= 20) {
-            List<BodyMovies> results = template()
-                    .getForEntity(urlFinalMovie, Poster.class)
-                    .getBody()
-                    .getResults()
-                    .stream()
-                    .filter(movie -> movie.getGenre_ids().contains(16))
-                    .collect(Collectors.toList());
-            log.info("The temp returned was {}", temp);
-            return results;
-        } else if (temp >= 0) {
-            List<BodyMovies> results = template()
-                    .getForEntity(urlFinalMovie, Poster.class)
-                    .getBody()
-                    .getResults()
-                    .stream()
-                    .filter(movie -> movie.getGenre_ids().contains(53))
-                    .collect(Collectors.toList());
-            log.info("The temp returned was {}", temp);
-            return results;
-        } else {
-            List<BodyMovies> results = template()
-                    .getForEntity(urlFinalMovie, Poster.class)
-                    .getBody()
-                    .getResults()
-                    .stream()
-                    .filter(movie -> movie.getGenre_ids().contains(99))
-                    .collect(Collectors.toList());
-            log.info("The temp returned was {}", temp);
-            return results;
-        }
+        return getMoviesByTemperatureAndGenre(temp);
     }
 
-    // MOVIE - GET
+    private List<BodyMovies> getMoviesByTemperatureAndGenre(Long temp) {
+        List<BodyMovies> results = template()
+                .getForEntity(getUrlMovie(), Poster.class)
+                .getBody()
+                .getResults();
+
+        Predicate<BodyMovies> genreFilter;
+
+        if (temp > 40) {
+            genreFilter = movie -> movie.getGenre_ids().contains(28);
+        } else if (temp >= 36) {
+            genreFilter = movie -> movie.getGenre_ids().contains(35);
+        } else if (temp >= 20) {
+            genreFilter = movie -> movie.getGenre_ids().contains(16);
+        } else if (temp >= 0) {
+            genreFilter = movie -> movie.getGenre_ids().contains(53);
+        } else {
+            genreFilter = movie -> movie.getGenre_ids().contains(99);
+        }
+
+        List<BodyMovies> filteredMovies = results.stream()
+                .filter(genreFilter)
+                .collect(Collectors.toList());
+
+        log.info("The temp returned was {}", temp);
+        return filteredMovies;
+    }
+
     public List<BodyMovies> getMovies() {
         return this.movieRepository.findAll();
     }
 
-    // MOVIE | GET + id
     public BodyMovies getMovieById(int id) throws MovieNotFoundException {
         return verifyIfExits(id);
     }
 
-    // MOVIE - POST
     public BodyMovies save(BodyMovies movie) {
-        String urlFinalMovie = getUrlMovie();
         return this.movieRepository.save(movie);
     }
 
-    // MOVIE | PUT
     public BodyMovies update(int id, BodyMovies movie) throws MovieNotFoundException {
         BodyMovies movieToUpdate = verifyIfExits(id);
 
@@ -141,43 +102,34 @@ public class MovieService {
         return this.movieRepository.save(movieToUpdate);
     }
 
-    // MOVIE | DELETE
     public void delete(int id) throws MovieNotFoundException {
         verifyIfExits(id);
         this.movieRepository.deleteById(id);
     }
 
-    // URL - MOVIE | method
     private String getUrlMovie() {
         String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
         String apiKey = "43690bf9a399137442f8bb73b262f447";
         String language = "pt-BR";
 
-        StringBuilder builder = new StringBuilder();
-        String urlFinal = builder
-                .append(apiUrl)
-                .append(apiKey)
-                .append("&language=")
-                .append(language)
-                .toString();
+        String urlFinal = apiUrl +
+                apiKey +
+                "&language=" +
+                language;
         return urlFinal;
     }
 
-    //    URL - WEATHER | method
     private String getUrlWeather(String city) {
         String apiKey = "bb85471d2221957c640336916cec2bf7";
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
         String units = "metric";
 
-        StringBuilder builder = new StringBuilder();
-        String urlFinal = builder
-                .append(apiUrl)
-                .append(city)
-                .append("&appid=")
-                .append(apiKey)
-                .append("&units=")
-                .append(units)
-                .toString();
+        String urlFinal = apiUrl +
+                city +
+                "&appid=" +
+                apiKey +
+                "&units=" +
+                units;
         return urlFinal;
     }
 
@@ -186,5 +138,4 @@ public class MovieService {
                 .findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
-
 }
