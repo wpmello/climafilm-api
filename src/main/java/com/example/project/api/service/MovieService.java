@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,18 +20,15 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@Component
 public class MovieService {
-
+    private final RestTemplate restTemplate;
     private MovieRepository movieRepository;
-
-    @Bean()
-    public RestTemplate template() {
-        return new RestTemplate();
+    public MovieService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public Long getTempCity(String city) {
-        return template()
+        return restTemplate
                 .exchange(getUrlWeather(city),
                         HttpMethod.GET,
                         null,
@@ -43,11 +39,11 @@ public class MovieService {
     }
 
     public Poster getMovieOnPlayingNow() {
-        return template().getForObject(getUrlMovie(), Poster.class);
+        return restTemplate.getForObject(getUrlMovie(), Poster.class);
     }
 
     public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
-        Long temp = template()
+        Long temp = restTemplate
                 .getForObject(getUrlWeather(city), BodyWeather.class)
                 .getMain()
                 .getTemp();
@@ -55,7 +51,7 @@ public class MovieService {
     }
 
     private List<BodyMovies> getMoviesByTemperatureAndGenre(Long temp) {
-        List<BodyMovies> results = template()
+        List<BodyMovies> results = restTemplate
                 .getForEntity(getUrlMovie(), Poster.class)
                 .getBody()
                 .getResults();
