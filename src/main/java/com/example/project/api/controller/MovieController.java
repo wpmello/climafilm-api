@@ -36,16 +36,12 @@ public class MovieController {
 
     @GetMapping("/db")
     public List<BodyMovies> getAllMoviesOnDatabase() {
-        List<BodyMovies> allMovieOnDatabase = this.movieService.getMovies();
-
-        return allMovieOnDatabase;
+        return this.movieService.getMovies();
     }
 
     @GetMapping("/db/{id}")
     public BodyMovies getAllMoviesOnDatabase(@PathVariable Integer id) throws MovieNotFoundException {
-        BodyMovies allMovieOnDatabase = this.movieService.getMovieById(id);
-
-        return allMovieOnDatabase;
+        return this.movieService.getMovieById(id);
     }
 
     @PostMapping("/db")
@@ -56,8 +52,7 @@ public class MovieController {
 
     @PutMapping("/db/{id}")
     public BodyMovies updateMovie(@PathVariable int id, @RequestBody BodyMovies movie) throws MovieNotFoundException {
-        BodyMovies movieToUpdate = this.movieService.update(id, movie);
-        return movieToUpdate;
+        return this.movieService.update(id, movie);
     }
 
     @DeleteMapping("/db/{id}")
