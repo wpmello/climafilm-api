@@ -27,27 +27,34 @@ public class MovieService {
         this.restTemplate = restTemplate;
     }
 
-    public Long getTempCity(String city) {
-        return restTemplate
-                .exchange(getUrlWeather(city),
-                        HttpMethod.GET,
-                        null,
-                        BodyWeather.class)
-                .getBody()
-                .getMain()
-                .getTemp();
+    private String getUrlMovie() {
+        String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
+        String apiKey = "43690bf9a399137442f8bb73b262f447";
+        String language = "pt-BR";
+
+        return apiUrl +
+                apiKey +
+                "&language=" +
+                language;
     }
 
-    public Poster getMovieOnPlayingNow() {
-        return restTemplate.getForObject(getUrlMovie(), Poster.class);
+    private String getUrlWeather(String city) {
+        String apiKey = "bb85471d2221957c640336916cec2bf7";
+        String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
+        String units = "metric";
+
+        return apiUrl +
+                city +
+                "&appid=" +
+                apiKey +
+                "&units=" +
+                units;
     }
 
-    public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
-        Long temp = restTemplate
-                .getForObject(getUrlWeather(city), BodyWeather.class)
-                .getMain()
-                .getTemp();
-        return getMoviesByTemperatureAndGenre(temp);
+    private BodyMovies verifyIfExits(int id) throws MovieNotFoundException {
+        return this.movieRepository
+                .findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
     private List<BodyMovies> getMoviesByTemperatureAndGenre(Long temp) {
@@ -78,6 +85,29 @@ public class MovieService {
         return filteredMovies;
     }
 
+    public Long getTempCity(String city) {
+        return restTemplate
+                .exchange(getUrlWeather(city),
+                        HttpMethod.GET,
+                        null,
+                        BodyWeather.class)
+                .getBody()
+                .getMain()
+                .getTemp();
+    }
+
+    public Poster getMovieOnPlayingNow() {
+        return restTemplate.getForObject(getUrlMovie(), Poster.class);
+    }
+
+    public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
+        Long temp = restTemplate
+                .getForObject(getUrlWeather(city), BodyWeather.class)
+                .getMain()
+                .getTemp();
+        return getMoviesByTemperatureAndGenre(temp);
+    }
+
     public List<BodyMovies> getMovies() {
         return this.movieRepository.findAll();
     }
@@ -101,37 +131,5 @@ public class MovieService {
     public void delete(int id) throws MovieNotFoundException {
         verifyIfExits(id);
         this.movieRepository.deleteById(id);
-    }
-
-    private String getUrlMovie() {
-        String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
-        String apiKey = "43690bf9a399137442f8bb73b262f447";
-        String language = "pt-BR";
-
-        String urlFinal = apiUrl +
-                apiKey +
-                "&language=" +
-                language;
-        return urlFinal;
-    }
-
-    private String getUrlWeather(String city) {
-        String apiKey = "bb85471d2221957c640336916cec2bf7";
-        String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
-        String units = "metric";
-
-        String urlFinal = apiUrl +
-                city +
-                "&appid=" +
-                apiKey +
-                "&units=" +
-                units;
-        return urlFinal;
-    }
-
-    private BodyMovies verifyIfExits(int id) throws MovieNotFoundException {
-        return this.movieRepository
-                .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(id));
     }
 }
