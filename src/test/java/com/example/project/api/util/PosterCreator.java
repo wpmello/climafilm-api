@@ -1,10 +1,10 @@
 package com.example.project.api.util;
 
-import com.example.project.api.model.themovie.Poster;
+import com.example.project.api.model.dto.PosterDTO;
 
 public class PosterCreator {
-    public static Poster createValidPoster() {
-        return Poster
+    public static PosterDTO createValidPoster() {
+        return PosterDTO
                 .builder()
                 .build();
     }

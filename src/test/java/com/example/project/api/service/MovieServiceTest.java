@@ -1,8 +1,7 @@
 package com.example.project.api.service;
 
-import com.example.project.api.model.themovie.BodyMovie;
-import com.example.project.api.model.themovie.BodyMovies;
-import com.example.project.api.model.themovie.Poster;
+import com.example.project.api.model.dto.BodyMovieDTO;
+import com.example.project.api.model.dto.PosterDTO;
 import com.example.project.api.util.PosterCreator;
 import com.example.project.api.util.WeatherCreator;
 import org.assertj.core.api.Assertions;
@@ -35,11 +34,11 @@ class MovieServiceTest {
     @Test
     @DisplayName("getMovieOnPlayingNow Returns return movies is playing now when successful")
     void getMovieOnPlayingNow_ReturnsMoviesIsPlayingNowWhenSuccessful() {
-        List<BodyMovie> results = PosterCreator.createValidPoster().getResults();
-        Poster movieOnPlayingNow = movieService.getMovieOnPlayingNow();
+        List<BodyMovieDTO> results = PosterCreator.createValidPoster().results();
+        PosterDTO movieOnPlayingNow = movieService.getMovieOnPlayingNow();
 
         Assertions.assertThat(movieOnPlayingNow).isNotNull();
-        Assertions.assertThat(movieOnPlayingNow.getResults()).isNotEmpty();
-        Assertions.assertThat(movieOnPlayingNow.getResults().equals(results));
+        Assertions.assertThat(movieOnPlayingNow.results()).isNotEmpty();
+        Assertions.assertThat(movieOnPlayingNow.results().equals(results));
     }
 }

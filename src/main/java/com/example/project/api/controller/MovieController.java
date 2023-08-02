@@ -1,8 +1,8 @@
 package com.example.project.api.controller;
 
 import com.example.project.api.model.dto.BodyMovieDTO;
+import com.example.project.api.model.dto.PosterDTO;
 import com.example.project.api.model.themovie.BodyMovie;
-import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.service.MovieService;
 import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class MovieController {
     }
 
     @GetMapping("/on-playing")
-    public Poster getMovieOnPlayingNow() {
+    public PosterDTO getMovieOnPlayingNow() {
         return this.movieService.getMovieOnPlayingNow();
     }
 

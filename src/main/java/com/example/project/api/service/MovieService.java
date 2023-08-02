@@ -103,8 +103,9 @@ public class MovieService {
                 .getTemp();
     }
 
-    public Poster getMovieOnPlayingNow() {
-        return restTemplate.getForObject(getUrlMovie(), Poster.class);
+    public PosterDTO getMovieOnPlayingNow() {
+        Poster poster = restTemplate.getForObject(getUrlMovie(), Poster.class);
+        return posterMapper.toDTO(poster);
     }
 
     public List<BodyMovieDTO> getMovieOnPlayingNowPerCity(String city) {
