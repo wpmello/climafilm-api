@@ -1,8 +1,10 @@
 package com.example.project.api.service;
 
 import com.example.project.api.model.dto.BodyMovieDTO;
+import com.example.project.api.model.dto.PosterDTO;
 import com.example.project.api.model.dto.mapper.BodyMovieMapper;
-import com.example.project.api.model.themovie.BodyMovies;
+import com.example.project.api.model.dto.mapper.PosterMapper;
+import com.example.project.api.model.themovie.BodyMovie;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
 import com.example.project.api.repository.MovieRepository;
@@ -10,7 +12,6 @@ import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +27,7 @@ public class MovieService {
     private final RestTemplate restTemplate;
     private MovieRepository movieRepository;
     private final BodyMovieMapper bodyMovieMapper = BodyMovieMapper.INSTANCE;
+    private final PosterMapper posterMapper = PosterMapper.INSTANCE;
 
     public MovieService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -55,19 +57,19 @@ public class MovieService {
                 units;
     }
 
-    private BodyMovies verifyIfExits(int id) throws MovieNotFoundException {
+    private BodyMovie verifyIfExits(int id) throws MovieNotFoundException {
         return this.movieRepository
                 .findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
     private List<BodyMovieDTO> getMoviesByTemperatureAndGenre(Long temp) {
-        List<BodyMovies> results = restTemplate
+        List<BodyMovie> results = restTemplate
                 .getForEntity(getUrlMovie(), Poster.class)
                 .getBody()
                 .getResults();
 
-        Predicate<BodyMovies> genreFilter;
+        Predicate<BodyMovie> genreFilter;
 
         if (temp > 40) {
             genreFilter = movie -> movie.getGenre_ids().contains(28);
@@ -113,20 +115,20 @@ public class MovieService {
         return getMoviesByTemperatureAndGenre(temp);
     }
 
-    public List<BodyMovies> getMovies() {
+    public List<BodyMovie> getMovies() {
         return this.movieRepository.findAll();
     }
 
-    public BodyMovies getMovieById(int id) throws MovieNotFoundException {
+    public BodyMovie getMovieById(int id) throws MovieNotFoundException {
         return verifyIfExits(id);
     }
 
-    public BodyMovies save(BodyMovies movie) {
+    public BodyMovie save(BodyMovie movie) {
         return this.movieRepository.save(movie);
     }
 
-    public BodyMovies update(int id, BodyMovies movie) throws MovieNotFoundException {
-        BodyMovies movieToUpdate = verifyIfExits(id);
+    public BodyMovie update(int id, BodyMovie movie) throws MovieNotFoundException {
+        BodyMovie movieToUpdate = verifyIfExits(id);
 
         movieToUpdate.setTitle(movie.getTitle());
 

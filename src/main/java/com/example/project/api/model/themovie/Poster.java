@@ -19,7 +19,7 @@ public class Poster {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer page;
     @Transient
-    private List<BodyMovies> results = new ArrayList<>();
+    private List<BodyMovie> results = new ArrayList<>();
     private Integer total_pages;
     private Integer total_results;
 }

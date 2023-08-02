@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class BodyMovies {
+public class BodyMovie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

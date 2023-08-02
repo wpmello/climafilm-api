@@ -1,7 +1,7 @@
 package com.example.project.api.controller;
 
 import com.example.project.api.model.dto.BodyMovieDTO;
-import com.example.project.api.model.themovie.BodyMovies;
+import com.example.project.api.model.themovie.BodyMovie;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.service.MovieService;
 import com.example.project.api.service.exceptions.MovieNotFoundException;
@@ -36,23 +36,23 @@ public class MovieController {
     }
 
     @GetMapping("/db")
-    public List<BodyMovies> getAllMoviesOnDatabase() {
+    public List<BodyMovie> getAllMoviesOnDatabase() {
         return this.movieService.getMovies();
     }
 
     @GetMapping("/db/{id}")
-    public BodyMovies getAllMoviesOnDatabase(@PathVariable Integer id) throws MovieNotFoundException {
+    public BodyMovie getAllMoviesOnDatabase(@PathVariable Integer id) throws MovieNotFoundException {
         return this.movieService.getMovieById(id);
     }
 
     @PostMapping("/db")
     @ResponseStatus(HttpStatus.CREATED)
-    public BodyMovies AddMovie(@RequestBody @Valid BodyMovies movie) {
+    public BodyMovie AddMovie(@RequestBody @Valid BodyMovie movie) {
         return this.movieService.save(movie);
     }
 
     @PutMapping("/db/{id}")
-    public BodyMovies updateMovie(@PathVariable int id, @RequestBody BodyMovies movie) throws MovieNotFoundException {
+    public BodyMovie updateMovie(@PathVariable int id, @RequestBody BodyMovie movie) throws MovieNotFoundException {
         return this.movieService.update(id, movie);
     }
 

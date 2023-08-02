@@ -1,5 +1,6 @@
 package com.example.project.api.service;
 
+import com.example.project.api.model.themovie.BodyMovie;
 import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.util.PosterCreator;
@@ -34,7 +35,7 @@ class MovieServiceTest {
     @Test
     @DisplayName("getMovieOnPlayingNow Returns return movies is playing now when successful")
     void getMovieOnPlayingNow_ReturnsMoviesIsPlayingNowWhenSuccessful() {
-        List<BodyMovies> results = PosterCreator.createValidPoster().getResults();
+        List<BodyMovie> results = PosterCreator.createValidPoster().getResults();
         Poster movieOnPlayingNow = movieService.getMovieOnPlayingNow();
 
         Assertions.assertThat(movieOnPlayingNow).isNotNull();
