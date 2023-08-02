@@ -1,5 +1,7 @@
 package com.example.project.api.service;
 
+import com.example.project.api.model.dto.BodyMovieDTO;
+import com.example.project.api.model.dto.mapper.BodyMovieMapper;
 import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class MovieService {
     private final RestTemplate restTemplate;
     private MovieRepository movieRepository;
+    private final BodyMovieMapper bodyMovieMapper = BodyMovieMapper.INSTANCE;
+
     public MovieService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -57,7 +61,7 @@ public class MovieService {
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
-    private List<BodyMovies> getMoviesByTemperatureAndGenre(Long temp) {
+    private List<BodyMovieDTO> getMoviesByTemperatureAndGenre(Long temp) {
         List<BodyMovies> results = restTemplate
                 .getForEntity(getUrlMovie(), Poster.class)
                 .getBody()
@@ -77,8 +81,9 @@ public class MovieService {
             genreFilter = movie -> movie.getGenre_ids().contains(99);
         }
 
-        List<BodyMovies> filteredMovies = results.stream()
+        List<BodyMovieDTO> filteredMovies = results.stream()
                 .filter(genreFilter)
+                .map(bodyMovieMapper::toDTO)
                 .collect(Collectors.toList());
 
         log.info("The temp returned was {}", temp);
@@ -100,7 +105,7 @@ public class MovieService {
         return restTemplate.getForObject(getUrlMovie(), Poster.class);
     }
 
-    public List<BodyMovies> getMovieOnPlayingNowPerCity(String city) {
+    public List<BodyMovieDTO> getMovieOnPlayingNowPerCity(String city) {
         Long temp = restTemplate
                 .getForObject(getUrlWeather(city), BodyWeather.class)
                 .getMain()

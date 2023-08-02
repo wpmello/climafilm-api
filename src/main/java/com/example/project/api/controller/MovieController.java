@@ -1,5 +1,6 @@
 package com.example.project.api.controller;
 
+import com.example.project.api.model.dto.BodyMovieDTO;
 import com.example.project.api.model.themovie.BodyMovies;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.service.MovieService;
@@ -30,7 +31,7 @@ public class MovieController {
     }
 
     @GetMapping("/on-playing/{city}")
-    public List<BodyMovies> getMoviePerCity(@PathVariable String city) {
+    public List<BodyMovieDTO> getMoviePerCity(@PathVariable String city) {
         return this.movieService.getMovieOnPlayingNowPerCity(city);
     }
 
