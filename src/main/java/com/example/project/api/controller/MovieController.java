@@ -36,7 +36,7 @@ public class MovieController {
     }
 
     @GetMapping("/db")
-    public List<BodyMovie> getAllMoviesOnDatabase() {
+    public List<BodyMovieDTO> getAllMoviesOnDatabase() {
         return this.movieService.getMovies();
     }
 
@@ -47,12 +47,12 @@ public class MovieController {
 
     @PostMapping("/db")
     @ResponseStatus(HttpStatus.CREATED)
-    public BodyMovie AddMovie(@RequestBody @Valid BodyMovie movie) {
+    public BodyMovieDTO AddMovie(@RequestBody @Valid BodyMovie movie) {
         return this.movieService.save(movie);
     }
 
     @PutMapping("/db/{id}")
-    public BodyMovie updateMovie(@PathVariable int id, @RequestBody BodyMovie movie) throws MovieNotFoundException {
+    public BodyMovieDTO updateMovie(@PathVariable int id, @RequestBody BodyMovieDTO movie) throws MovieNotFoundException {
         return this.movieService.update(id, movie);
     }
 

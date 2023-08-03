@@ -116,24 +116,26 @@ public class MovieService {
         return getMoviesByTemperatureAndGenre(temp);
     }
 
-    public List<BodyMovie> getMovies() {
-        return this.movieRepository.findAll();
+    public List<BodyMovieDTO> getMovies() {
+        List<BodyMovie> bodyMovies = this.movieRepository.findAll();
+        return bodyMovies.stream().map(bodyMovieMapper::toDTO).collect(Collectors.toList());
     }
 
     public BodyMovie getMovieById(int id) throws MovieNotFoundException {
         return verifyIfExits(id);
     }
 
-    public BodyMovie save(BodyMovie movie) {
-        return this.movieRepository.save(movie);
+    public BodyMovieDTO save(BodyMovie movie) {
+        BodyMovie savedMovie = this.movieRepository.save(movie);
+        return bodyMovieMapper.toDTO(savedMovie);
     }
 
-    public BodyMovie update(int id, BodyMovie movie) throws MovieNotFoundException {
-        BodyMovie movieToUpdate = verifyIfExits(id);
+    public BodyMovieDTO update(int id, BodyMovieDTO movie) throws MovieNotFoundException {
+        BodyMovie bodyMovie = verifyIfExits(id);
+        bodyMovie.setTitle(movie.title());
+        BodyMovie savedMovie = this.movieRepository.save(bodyMovie);
 
-        movieToUpdate.setTitle(movie.getTitle());
-
-        return this.movieRepository.save(movieToUpdate);
+        return bodyMovieMapper.toDTO(savedMovie);
     }
 
     public void delete(int id) throws MovieNotFoundException {
