@@ -10,4 +10,9 @@ public class RestTemplateConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+    @Bean
+    public String string() {
+        return "";
+    }
 }

@@ -12,6 +12,7 @@ import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class MovieService {
+    @Value("${movie.api.key}")
+    private String movieApiKey;
+
+    @Value("${weather.api.key}")
+    private String weatherApiKey;
+
     private final RestTemplate restTemplate;
     private MovieRepository movieRepository;
     private final BodyMovieMapper bodyMovieMapper = BodyMovieMapper.INSTANCE;
@@ -35,24 +42,22 @@ public class MovieService {
 
     private String getUrlMovie() {
         String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
-        String apiKey = "43690bf9a399137442f8bb73b262f447";
         String language = "pt-BR";
 
         return apiUrl +
-                apiKey +
+                movieApiKey +
                 "&language=" +
                 language;
     }
 
     private String getUrlWeather(String city) {
-        String apiKey = "bb85471d2221957c640336916cec2bf7";
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
         String units = "metric";
 
         return apiUrl +
                 city +
                 "&appid=" +
-                apiKey +
+                weatherApiKey +
                 "&units=" +
                 units;
     }
