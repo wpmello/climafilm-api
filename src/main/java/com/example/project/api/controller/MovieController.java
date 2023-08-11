@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("app/movie")
-@CrossOrigin(maxAge = 3600)
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class MovieController {
 
