@@ -23,6 +23,3 @@ Para o desenvolvimento foram usadas duas APIs externas que são elas: [openweath
 - JPA
 - H2 (para testes)
 - PostgreSql
----
-# Api documentada com Swagger
-Clique no link para testar a api [climafilm-api](https://climafilm-api.up.railway.app/swagger-ui/index.html)
