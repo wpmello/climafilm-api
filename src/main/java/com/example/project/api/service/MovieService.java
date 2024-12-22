@@ -1,18 +1,12 @@
 package com.example.project.api.service;
 
-import com.example.project.api.model.dto.BodyMovieDTO;
-import com.example.project.api.model.dto.PosterDTO;
-import com.example.project.api.model.dto.mapper.BodyMovieMapper;
-import com.example.project.api.model.dto.mapper.PosterMapper;
 import com.example.project.api.model.themovie.BodyMovie;
+import com.example.project.api.model.themovie.MovieDetail;
 import com.example.project.api.model.themovie.Poster;
 import com.example.project.api.model.weather.BodyWeather;
-import com.example.project.api.repository.MovieRepository;
-import com.example.project.api.service.exceptions.MovieNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,27 +19,29 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class MovieService {
-    @Value("${movie.api.key}")
+    // @Value("${movie.api.key}")
     private String movieApiKey;
 
-    @Value("${weather.api.key}")
+    // @Value("${weather.api.key}")
     private String weatherApiKey;
 
     private final RestTemplate restTemplate;
-    private MovieRepository movieRepository;
-    private final BodyMovieMapper bodyMovieMapper = BodyMovieMapper.INSTANCE;
-    private final PosterMapper posterMapper = PosterMapper.INSTANCE;
+
+    private final String NOW_PLAYING = "now_playing";
+    private final String POPULAR = "popular";
+    private final String TOP_RATED = "top_rated";
+    private final String UPCOMING = "upcoming";
 
     public MovieService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    private String getUrlMovie() {
-        String apiUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
+    private String getUrlMovie(String filter) {
+        String apiUrl = "https://api.themoviedb.org/3/movie/" + filter + "?api_key=";
         String language = "pt-BR";
 
         return apiUrl +
-                movieApiKey +
+                "379ad10792defe360d3d70cf545f60a1" +
                 "&language=" +
                 language;
     }
@@ -57,44 +53,40 @@ public class MovieService {
         return apiUrl +
                 city +
                 "&appid=" +
-                weatherApiKey +
+                "0e433d585f942cb93013e4f1341260bd" +
                 "&units=" +
                 units;
     }
 
-    private BodyMovie verifyIfExits(int id) throws MovieNotFoundException {
-        return this.movieRepository
-                .findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(id));
-    }
-
-    private List<BodyMovieDTO> getMoviesByTemperatureAndGenre(Long temp) {
+    private List<BodyMovie> getMoviesByTemperatureAndGenre(Long temp) {
         List<BodyMovie> results = restTemplate
-                .getForEntity(getUrlMovie(), Poster.class)
+                .getForEntity(getUrlMovie(NOW_PLAYING), Poster.class)
                 .getBody()
-                .getResults();
+                .results();
 
-        Predicate<BodyMovie> genreFilter;
+        int genreId = getGenreIdByTemperature(temp);
 
-        if (temp > 40) {
-            genreFilter = movie -> movie.getGenre_ids().contains(28);
-        } else if (temp >= 36) {
-            genreFilter = movie -> movie.getGenre_ids().contains(35);
-        } else if (temp >= 20) {
-            genreFilter = movie -> movie.getGenre_ids().contains(16);
-        } else if (temp >= 0) {
-            genreFilter = movie -> movie.getGenre_ids().contains(53);
-        } else {
-            genreFilter = movie -> movie.getGenre_ids().contains(99);
-        }
-
-        List<BodyMovieDTO> filteredMovies = results.stream()
-                .filter(genreFilter)
-                .map(bodyMovieMapper::toDTO)
+        List<BodyMovie> filteredMovies = results.stream()
+                .filter(move -> move.genre_ids().contains(genreId))
                 .collect(Collectors.toList());
 
         log.info("The temp returned was {}", temp);
         return filteredMovies;
+    }
+
+    private int getGenreIdByTemperature(Long temp) {
+        // TODO: remove magic numbers
+        if (temp > 40) {
+            return 28;
+        } else if (temp >= 36) {
+            return 35;
+        } else if (temp >= 20) {
+            return 16;
+        } else if (temp >= 0) {
+            return 53;
+        } else {
+            return 99;
+        }
     }
 
     public Long getTempCity(String city) {
@@ -108,43 +100,36 @@ public class MovieService {
                 .getTemp();
     }
 
-    public PosterDTO getMovieOnPlayingNow() {
-        Poster poster = restTemplate.getForObject(getUrlMovie(), Poster.class);
-        return posterMapper.toDTO(poster);
+    public Poster getMovieOnPlayingNow() {
+        Poster poster = restTemplate.getForObject(getUrlMovie(NOW_PLAYING), Poster.class);
+        return poster;
     }
 
-    public List<BodyMovieDTO> getMovieOnPlayingNowPerCity(String city) {
+    public Poster getPopularMovies() {
+        Poster poster = restTemplate.getForObject(getUrlMovie(POPULAR), Poster.class);
+        return poster;
+    }
+
+    public Poster getTopRatedMovies() {
+        Poster poster = restTemplate.getForObject(getUrlMovie(TOP_RATED), Poster.class);
+        return poster;
+    }
+
+    public Poster getUpcomingMovies() {
+        Poster poster = restTemplate.getForObject(getUrlMovie(UPCOMING), Poster.class);
+        return poster;
+    }
+
+    public MovieDetail getMovieByIdAPI(int id) {
+        MovieDetail movieDetal = restTemplate.getForObject(getUrlMovie(String.valueOf(id)), MovieDetail.class);
+        return movieDetal;
+    }
+
+    public List<BodyMovie> getMovieOnPlayingNowPerCity(String city) {
         Long temp = restTemplate
                 .getForObject(getUrlWeather(city), BodyWeather.class)
                 .getMain()
                 .getTemp();
         return getMoviesByTemperatureAndGenre(temp);
-    }
-
-    public List<BodyMovieDTO> getMovies() {
-        List<BodyMovie> bodyMovies = this.movieRepository.findAll();
-        return bodyMovies.stream().map(bodyMovieMapper::toDTO).collect(Collectors.toList());
-    }
-
-    public BodyMovie getMovieById(int id) throws MovieNotFoundException {
-        return verifyIfExits(id);
-    }
-
-    public BodyMovieDTO save(BodyMovie movie) {
-        BodyMovie savedMovie = this.movieRepository.save(movie);
-        return bodyMovieMapper.toDTO(savedMovie);
-    }
-
-    public BodyMovieDTO update(int id, BodyMovieDTO movie) throws MovieNotFoundException {
-        BodyMovie bodyMovie = verifyIfExits(id);
-        bodyMovie.setTitle(movie.title());
-        BodyMovie savedMovie = this.movieRepository.save(bodyMovie);
-
-        return bodyMovieMapper.toDTO(savedMovie);
-    }
-
-    public void delete(int id) throws MovieNotFoundException {
-        verifyIfExits(id);
-        this.movieRepository.deleteById(id);
     }
 }
