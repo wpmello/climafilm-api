@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,22 +26,28 @@ public class MovieService {
 
     private final RestTemplate restTemplate;
 
-    private final String NOW_PLAYING = "now_playing";
-    private final String POPULAR = "popular";
-    private final String TOP_RATED = "top_rated";
-    private final String UPCOMING = "upcoming";
-
+    private final String NOW_PLAYING = "/now_playing";
+    private final String POPULAR = "/popular";
+    private final String TOP_RATED = "/top_rated";
+    private final String UPCOMING = "/upcoming";
+    private final String SEARCH = "search/";
+    private final String QUERY = "?query=";
+    
     public MovieService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    private String getUrlMovie(String filter) {
-        String apiUrl = "https://api.themoviedb.org/3/movie/" + filter + "?api_key=";
-        String language = "pt-BR";
+    private String getUrlMovie(String param1, String param2, String param3) {
+        String baseUrl = "https://api.themoviedb.org/3/" + param1 + "movie" + param2 + param3;
+        String apiKeyParam = "api_key=379ad10792defe360d3d70cf545f60a1";
+        String language = "language=pt-BR";
 
-        return apiUrl +
-                "379ad10792defe360d3d70cf545f60a1" +
-                "&language=" +
+        String separator = baseUrl.contains("?") ? "&" : "?";
+
+        return baseUrl +
+                separator +
+                apiKeyParam +
+                "&" +
                 language;
     }
 
@@ -60,7 +65,7 @@ public class MovieService {
 
     private List<BodyMovie> getMoviesByTemperatureAndGenre(Long temp) {
         List<BodyMovie> results = restTemplate
-                .getForEntity(getUrlMovie(NOW_PLAYING), Poster.class)
+                .getForEntity(getUrlMovie("", NOW_PLAYING, ""), Poster.class)
                 .getBody()
                 .results();
 
@@ -101,28 +106,33 @@ public class MovieService {
     }
 
     public Poster getMovieOnPlayingNow() {
-        Poster poster = restTemplate.getForObject(getUrlMovie(NOW_PLAYING), Poster.class);
+        Poster poster = restTemplate.getForObject(getUrlMovie("", NOW_PLAYING, ""), Poster.class);
         return poster;
     }
 
     public Poster getPopularMovies() {
-        Poster poster = restTemplate.getForObject(getUrlMovie(POPULAR), Poster.class);
+        Poster poster = restTemplate.getForObject(getUrlMovie("", POPULAR, ""), Poster.class);
         return poster;
     }
 
     public Poster getTopRatedMovies() {
-        Poster poster = restTemplate.getForObject(getUrlMovie(TOP_RATED), Poster.class);
+        Poster poster = restTemplate.getForObject(getUrlMovie("", TOP_RATED, ""), Poster.class);
         return poster;
     }
 
     public Poster getUpcomingMovies() {
-        Poster poster = restTemplate.getForObject(getUrlMovie(UPCOMING), Poster.class);
+        Poster poster = restTemplate.getForObject(getUrlMovie("", UPCOMING, ""), Poster.class);
         return poster;
     }
 
     public MovieDetail getMovieByIdAPI(int id) {
-        MovieDetail movieDetal = restTemplate.getForObject(getUrlMovie(String.valueOf(id)), MovieDetail.class);
+        MovieDetail movieDetal = restTemplate.getForObject(getUrlMovie("", String.valueOf(id), ""), MovieDetail.class);
         return movieDetal;
+    }
+
+    public Poster getSearchMovies(String movieName) {
+        Poster poster = restTemplate.getForObject(getUrlMovie(SEARCH, QUERY, movieName), Poster.class);
+        return poster;
     }
 
     public List<BodyMovie> getMovieOnPlayingNowPerCity(String city) {
