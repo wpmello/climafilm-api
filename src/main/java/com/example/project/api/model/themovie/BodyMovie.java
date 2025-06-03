@@ -7,6 +7,7 @@ import java.util.List;
 public record BodyMovie(
         Integer id,
         boolean adult,
+        String backdrop_path,
         @Transient
         List<Integer> genre_ids,
         String original_title,

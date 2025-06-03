@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("app/movie")
@@ -79,6 +80,16 @@ public class MovieController {
     @GetMapping("movie-detail/{id}")
     public MovieDetail getMovieDetail(@PathVariable int id) {
         return this.movieService.getMovieByIdAPI(id);
+    }
+
+    @Operation(summary = "Pesquisa filmes pelo nome.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna os filmes com o nome fornecido."),
+            @ApiResponse(responseCode = "500", description = "Erro ao tentar pesquisar os filmes pelo nome.")
+    })
+    @GetMapping("/search/{movieName}")
+    public Poster getSearchMovies(@PathVariable String movieName) {
+        return this.movieService.getSearchMovies(movieName);
     }
 
     @Operation(summary = "Dado uma cidade, retorna os filmes que estão em cartaz no momento filtrados por gêneros.")
