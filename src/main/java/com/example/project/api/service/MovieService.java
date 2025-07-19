@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,29 +29,37 @@ public class MovieService {
 
     private final RestTemplate restTemplate;
 
-    private final String NOW_PLAYING = "/now_playing";
-    private final String POPULAR = "/popular";
-    private final String TOP_RATED = "/top_rated";
-    private final String UPCOMING = "/upcoming";
-    private final String SEARCH = "search/";
-    private final String QUERY = "?query=";
+    private final String NOW_PLAYING = "now_playing";
+    private final String POPULAR = "popular";
+    private final String TOP_RATED = "top_rated";
+    private final String UPCOMING = "upcoming";
+    private final String SEARCH = "search";
+    private final String QUERY = "query";
     
     public MovieService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    private String getUrlMovie(String param1, String param2, String param3) {
-        String baseUrl = "https://api.themoviedb.org/3/" + param1 + "movie" + param2 + param3;
-        String apiKeyParam = "api_key=379ad10792defe360d3d70cf545f60a1";
-        String language = "language=pt-BR";
+    private String getUrlMovie(String param1, String param2, String queryValue) {
+        String baseUrl = "https://api.themoviedb.org/3";
 
-        String separator = baseUrl.contains("?") ? "&" : "?";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(baseUrl)
+                .pathSegment(param1)
+                .pathSegment("movie");
 
-        return baseUrl +
-                separator +
-                apiKeyParam +
-                "&" +
-                language;
+        if (param2 != null && !param2.isEmpty()) {
+            builder.pathSegment(param2);
+        }
+        
+        if (queryValue != null && !queryValue.isEmpty()) {
+            builder.queryParam(QUERY, queryValue);
+        }
+
+        builder.queryParam("api_key", "10df5ff760bcd7462684bd43487b0922")
+            .queryParam("language", "pt-BR");
+
+        return builder.toUriString();
     }
 
     private String getUrlWeather(String city) {
@@ -63,7 +74,7 @@ public class MovieService {
                 units;
     }
 
-    private List<BodyMovie> getMoviesByTemperatureAndGenre(Long temp) {
+    private Map<Long, List<BodyMovie>> getMoviesByTemperatureAndGenre(Long temp) {
         List<BodyMovie> results = restTemplate
                 .getForEntity(getUrlMovie("", NOW_PLAYING, ""), Poster.class)
                 .getBody()
@@ -76,12 +87,12 @@ public class MovieService {
                 .collect(Collectors.toList());
 
         log.info("The temp returned was {}", temp);
-        return filteredMovies;
+        return Collections.singletonMap(temp, filteredMovies);
     }
 
     private int getGenreIdByTemperature(Long temp) {
         // TODO: remove magic numbers
-        if (temp > 40) {
+        if (temp >= 40) {
             return 28;
         } else if (temp >= 36) {
             return 35;
@@ -126,16 +137,17 @@ public class MovieService {
     }
 
     public MovieDetail getMovieByIdAPI(int id) {
-        MovieDetail movieDetal = restTemplate.getForObject(getUrlMovie("", String.valueOf(id), ""), MovieDetail.class);
+        MovieDetail movieDetal = restTemplate
+            .getForObject(getUrlMovie("", String.valueOf(id), ""), MovieDetail.class);
         return movieDetal;
     }
 
     public Poster getSearchMovies(String movieName) {
-        Poster poster = restTemplate.getForObject(getUrlMovie(SEARCH, QUERY, movieName), Poster.class);
+        Poster poster = restTemplate.getForObject(getUrlMovie(SEARCH, "", movieName), Poster.class);
         return poster;
     }
 
-    public List<BodyMovie> getMovieOnPlayingNowPerCity(String city) {
+    public Map<Long, List<BodyMovie>> getMovieOnPlayingNowPerCity(String city) {
         Long temp = restTemplate
                 .getForObject(getUrlWeather(city), BodyWeather.class)
                 .getMain()
