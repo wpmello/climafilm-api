@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -98,7 +99,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Erro ao tentar retornar os filmes que estão em cartaz no momento, filtrados por gênero.")
     })
     @GetMapping("/on-playing/{city}")
-    public List<BodyMovie> getMoviePerCity(@PathVariable String city) {
+    public Map<Long, List<BodyMovie>> getMoviePerCity(@PathVariable String city) {
         return this.movieService.getMovieOnPlayingNowPerCity(city);
     }
 }
