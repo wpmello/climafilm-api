@@ -92,12 +92,12 @@ public class MovieService {
 
     private int getGenreIdByTemperature(Long temp) {
         // TODO: remove magic numbers
-        if (temp >= 40) {
-            return 28;
-        } else if (temp >= 36) {
-            return 35;
-        } else if (temp >= 20) {
+        if (temp >= 38) {
             return 16;
+        } else if (temp > 30) {
+            return 28;
+        } else if (temp > 20) {
+            return 35;
         } else if (temp >= 0) {
             return 53;
         } else {

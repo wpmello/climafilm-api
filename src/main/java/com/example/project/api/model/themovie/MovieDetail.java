@@ -19,7 +19,7 @@ public record MovieDetail(
     List<ProductionCompany> production_companies,
     List<ProductionCountry> production_countries,
     String release_date,
-    int revenue,
+    Long revenue,
     int runtime,
     List<SpokenLanguage> spoken_languages,
     String status,
