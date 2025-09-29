@@ -7,6 +7,7 @@ import com.example.project.api.model.weather.BodyWeather;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,10 +22,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class MovieService {
-    // @Value("${movie.api.key}")
+    @Value("${movie.api.key}")
     private String movieApiKey;
 
-    // @Value("${weather.api.key}")
+    @Value("${weather.api.key}")
     private String weatherApiKey;
 
     private final RestTemplate restTemplate;
@@ -56,7 +57,7 @@ public class MovieService {
             builder.queryParam(QUERY, queryValue);
         }
 
-        builder.queryParam("api_key", "10df5ff760bcd7462684bd43487b0922")
+        builder.queryParam("api_key", movieApiKey)
             .queryParam("language", "pt-BR");
 
         return builder.toUriString();
@@ -69,7 +70,7 @@ public class MovieService {
         return apiUrl +
                 city +
                 "&appid=" +
-                "0e433d585f942cb93013e4f1341260bd" +
+                weatherApiKey +
                 "&units=" +
                 units;
     }
